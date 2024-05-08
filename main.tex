@@ -1,0 +1,506 @@
+\documentclass{beamer}
+\usetheme{ucl}
+
+\input{package}
+\input{macro}
+
+
+\setbeamersize{description width=2em}
+%%% Remove nav symbols (and shift any logo down to corner)
+\setbeamertemplate{navigation symbols}{\vspace{-2ex}}
+\setbeamertemplate{footline}[author title date]
+\setbeamercolor{banner}{bg=darkpurple}
+\useinnertheme{blockborder}
+
+\graphicspath{{./images/} }
+\title[P-tS for ILL]{Base-extension semantics for Intuitionistic Linear Logic}
+%\author{\texorpdfstring{Yll Buzoku\newline\url{y.buzoku@ucl.ac.uk}}{https://www.homepages.ucl.ac.uk/~zcapybu/}}
+\author{Yll Buzoku}
+\institute[UCL]{%
+  Department of Computer Science \\ %
+  University College London
+}
+\date{May 9, 2023}
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Presentation root directory}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\titlepage
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Goals for this presentation}
+\begin{frame}{Goals for this talk}
+\begin{itemize}[label={-}]
+\item To briefly introduce Intuitionistic Linear Logic.
+\item To give an overview of the setup of Base-Extension Semantics in the substructural setting.
+\item Present a Base-extension semantics for Intuitionistic Linear Logic.
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Presentation root directory}
+\tableofcontents
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Overview of Intuitionistic Linear Logic}
+\begin{frame}{Notation}
+	\begin{itemize}[label={-}]
+		\item $\At$ represents a fixed, countably infinite set of propositional atoms. 
+		\item Lower case latin letters represent propositional atoms 
+		\item Upper case latin letters represent finite multisets of propositional atoms. 
+		\item The empty multiset is denoted $\emptymultiset$. 
+		\item The sum of two multisets $\at{P}$ and $\at{Q}$ is denoted $\at{P},\at{Q}$. 
+		\item Lower case greek letters represent ILL formulas.
+		\item Upper case greek letters represent ILL finite multisets thereof. 
+		\item Atomic multiset is taken to mean multiset of propositional atoms.
+	\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{A natural deduction system for ILL}
+\begin{center}
+\noindent\begin{minipage}{0.47\textwidth}\scriptsize
+\begin{prooftree}
+  \def\ScoreOverhang{0.5pt}
+  	\AxiomC{}
+  	\RightLabel{Ax}
+  	\UnaryInfC{$\varphi\proves\varphi$}
+\end{prooftree}
+\end{minipage}
+\vspace{2pt}
+\noindent\begin{minipage}{0.47\textwidth}\scriptsize
+	\begin{prooftree}
+  	\def\ScoreOverhang{0.5pt}
+  		\AxiomC{$\Gamma,\varphi \proves \psi$}
+  		\RightLabel{$\mto$-I}
+  		\UnaryInfC{$\Gamma \proves \varphi \mto \psi$}
+	\end{prooftree}
+	\begin{prooftree}
+	\def\ScoreOverhang{0.5pt}
+		\AxiomC{$\Gamma \proves \varphi$}
+		\AxiomC{$\Delta \proves \psi$}
+		\RightLabel{$\mand$-I}
+		\BinaryInfC{$\Gamma,\Delta \proves \varphi\mand\psi$}
+	\end{prooftree}
+	\begin{prooftree}
+	\def\ScoreOverhang{0.5pt}
+		\AxiomC{}
+		\RightLabel{$\mtop$-I}
+		\UnaryInfC{$\proves \mtop$}
+	\end{prooftree}
+	\begin{prooftree}
+	\def\ScoreOverhang{0.5pt}
+		\AxiomC{$\Gamma \proves \varphi$}
+		\AxiomC{$\Gamma \proves \psi$}
+		\RightLabel{$\aand$-I}
+		\BinaryInfC{$\Gamma \proves \varphi \aand \psi$}
+	\end{prooftree}
+	\begin{prooftree}
+	\def\ScoreOverhang{0.5pt}
+		\AxiomC{$\Gamma \proves \varphi_i$}
+		\RightLabel{$\aor$-$\text{I}_i$}
+		\UnaryInfC{$\Gamma \proves \varphi_0 \aor \varphi_1$}
+	\end{prooftree}
+	\begin{prooftree}
+	\def\ScoreOverhang{0.5pt}
+		\AxiomC{No $\abot$ intro rule}
+	\end{prooftree}
+\end{minipage}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{minipage}{0.47\textwidth}\scriptsize
+	\begin{prooftree}
+  	\def\ScoreOverhang{0.5pt}
+  		\AxiomC{$\Gamma \proves \varphi \mto \psi$}
+  		\AxiomC{$\Delta \proves \varphi$}
+  		\RightLabel{$\mto$-E}
+  		\BinaryInfC{$\Gamma,\Delta \proves \psi$}
+	\end{prooftree}
+	\begin{prooftree}
+	\def\ScoreOverhang{0.5pt}
+		\AxiomC{$\Gamma \proves \varphi\mand\psi$}
+		\AxiomC{$\Delta, \varphi, \psi \proves \chi$}
+		\RightLabel{$\mand$-E}
+		\BinaryInfC{$\Gamma, \Delta \proves \chi$}
+	\end{prooftree}
+	\begin{prooftree}
+	\def\ScoreOverhang{0.5pt}
+		\AxiomC{$\Gamma \proves \varphi$}
+		\AxiomC{$\Delta \proves \mtop$}
+		\RightLabel{$\mtop$-E}
+		\BinaryInfC{$\Gamma,\Delta \proves \varphi$}
+	\end{prooftree}
+	\begin{prooftree}
+	\def\ScoreOverhang{0.5pt}
+		\AxiomC{$\Gamma \proves \varphi_0 \aand \varphi_1$}
+		\RightLabel{$\aand$-$\text{E}_i$}
+		\UnaryInfC{$\Gamma \proves \varphi_i$}
+	\end{prooftree}
+	\begin{prooftree}
+	\def\ScoreOverhang{0.5pt}
+		\AxiomC{$\Gamma \proves \varphi \aor \psi$}
+		\AxiomC{$\Delta,\varphi \proves \chi$}
+		\AxiomC{$\Delta,\psi \proves \chi$}
+		\RightLabel{$\aor$-E}
+		\TrinaryInfC{$\Gamma, \Delta \proves \chi$}
+	\end{prooftree}
+	\begin{prooftree}
+	\def\ScoreOverhang{0.5pt}
+		\AxiomC{$\Gamma \proves \abot$}
+		\RightLabel{$\abot$-E}
+		\UnaryInfC{$\Gamma \proves \varphi$}
+	\end{prooftree}
+\end{minipage}
+\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{A natural deduction system for ILL (cont.)}
+\begin{center}
+\begin{minipage}{0.75\textwidth}\scriptsize
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma_1 \provesILL \bang\psi_1$}
+			\AxiomC{$\ldots$}
+			\AxiomC{$\Gamma_n \provesILL \bang\psi_n$}
+			\AxiomC{$\bang\psi_1,\ldots, \bang\psi_n \provesILL \varphi$}
+			\RightLabel{$\bang$-Promotion}
+			\QuaternaryInfC{$\Gamma_1, \ldots,\Gamma_n \provesILL \bang\varphi$}
+	\end{prooftree}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma \provesILL \bang\varphi$}
+			\AxiomC{$\Delta, \varphi \provesILL \psi$}
+			\RightLabel{$\bang$-Dereliction}
+			\BinaryInfC{$\Gamma, \Delta\provesILL \psi$}
+	\end{prooftree}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma \provesILL \bang\varphi$}
+			\AxiomC{$\Delta \provesILL \psi$}
+			\RightLabel{$\bang$-Weakening}
+			\BinaryInfC{$\Gamma, \Delta\provesILL \psi$}
+	\end{prooftree}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma \provesILL \bang\varphi$}
+			\AxiomC{$\Delta,\bang\varphi,\bang\varphi \provesILL \psi$}
+			\RightLabel{$\bang$-Contraction}
+			\BinaryInfC{$\Gamma, \Delta\provesILL \psi$}
+	\end{prooftree}
+\end{minipage}
+\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is the general form of an inference figure?}
+	\pause
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma \proves \varphi$}
+			\AxiomC{$\Delta \proves \psi$}
+			\RightLabel{$\mand$-I}
+			\BinaryInfC{$\Gamma,\Delta \proves \varphi\mand\psi$}
+	\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is the general form of an inference figure?}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma \proves \varphi$}
+			\AxiomC{$\Gamma \proves \psi$}
+			\RightLabel{$\aand$-I}
+			\BinaryInfC{$\Gamma \proves \varphi \aand \psi$}
+		\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[b]{What is the general form of an inference figure?}
+	\pause
+	\begin{minipage}{0.47\textwidth}\scriptsize
+		\begin{prooftree}
+			\AxiomC{$\Gamma_1 \proves \varphi_1$}
+			\AxiomC{$\dots$}
+			\AxiomC{$\Gamma_n \proves \varphi_n$}
+			\TrinaryInfC{$\Gamma_1 \dots \Gamma_n \proves \psi$}
+		\end{prooftree}
+	\end{minipage}
+	\begin{minipage}{0.47\textwidth}\scriptsize
+		\begin{prooftree}
+			\AxiomC{$\Gamma \proves \varphi_1$}
+			\AxiomC{$\dots$}
+			\AxiomC{$\Gamma \proves \varphi_n$}
+			\dashedLine
+			\TrinaryInfC{$\Gamma \proves \psi$}
+		\end{prooftree}
+	\end{minipage}
+	\vspace{2cm}
+	\pause
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma \proves \varphi \aor \psi$}
+			\AxiomC{$\Delta,\varphi \proves \chi$}
+			\AxiomC{$\Delta,\psi \proves \chi$}
+			\RightLabel{$\aor$-E}
+			\TrinaryInfC{$\Gamma, \Delta \proves \chi$}
+	\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is the general form of an inference figure?}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma \proves \varphi \aor \psi$}
+			\AxiomC{$\Delta,\varphi \proves \chi$}
+			\AxiomC{$\Delta,\psi \proves \chi$}
+			\RightLabel{$\aor$-E}
+			\TrinaryInfC{$\Gamma, \Delta \proves \chi$}
+	\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is the general form of an inference figure?}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma \proves \varphi \aor \psi$}
+			\AxiomC{$\Delta\,\openaddrule\varphi \proves \chi$}
+			\AxiomC{$\psi \proves \chi\closeaddrule$}
+			\RightLabel{$\aor$-E}
+			\TrinaryInfC{$\Gamma, \Delta \proves \chi$}
+	\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is the general form of an inference figure?}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma\,\openaddrule \emptymultiset\proves \varphi \aor \psi\closeaddrule$}
+			\AxiomC{$\Delta\,\openaddrule\varphi \proves \chi$}
+			\AxiomC{$\psi \proves \chi\closeaddrule$}
+			\RightLabel{$\aor$-E}
+			\TrinaryInfC{$\Gamma, \Delta \proves \chi$}
+	\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is the general form of an inference figure?}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma\,\openaddrule \emptymultiset\proves \varphi \aor \psi\closeaddrule$}
+			\AxiomC{$\Delta\,\openaddrule\varphi \proves \chi$}
+			\AxiomC{$\psi \proves \chi\closeaddrule$}
+			\RightLabel{$\aor$-E}
+			\TrinaryInfC{$\Gamma, \Delta \proves \chi$}
+	\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is the general form of an inference figure?}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma\, \openaddrule\emptymultiset\proves \varphi\closeaddrule$}
+			\AxiomC{$\Delta\, \openaddrule\emptymultiset\proves \psi\closeaddrule$}
+			\RightLabel{$\mand$-I}
+			\BinaryInfC{$\Gamma,\Delta \proves \varphi\mand\psi$}
+	\end{prooftree}
+	\vspace{1cm}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma\,\openaddrule \emptymultiset\proves \varphi$}
+			\AxiomC{$\emptymultiset \proves \psi\closeaddrule$}
+			\RightLabel{$\aand$-I}
+			\BinaryInfC{$\Gamma \proves \varphi \aand \psi$}
+		\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is the general form of an inference figure?}
+		\begin{prooftree}
+			\AxiomC{$\dots$}
+			\AxiomC{$\Gamma_i\hspace*{5pt}\openaddrule \Delta_{i_1}\proves \varphi_{i_1}$}
+			\AxiomC{$\dots$}
+			\AxiomC{$\Delta_{i_{l_i}}\proves \varphi_{i_{l_i}}\closeaddrule$}
+			\AxiomC{$\dots$}
+			\QuinaryInfC{$\Gamma_1 \dots \Gamma_n \proves \psi$}
+		\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is the general form of an inference figure?}
+	\pause
+	Almost! What about:\newline
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma_1 \provesILL \bang\psi_1$}
+			\AxiomC{$\ldots$}
+			\AxiomC{$\Gamma_n \provesILL \bang\psi_n$}
+			\AxiomC{$\bang\psi_1,\ldots, \bang\psi_n \provesILL \varphi$}
+			\RightLabel{$\bang$-Promotion}
+			\QuaternaryInfC{$\Gamma_1, \ldots,\Gamma_n \provesILL \bang\varphi$}
+	\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is the general form of an inference figure?}
+	\begin{prooftree}
+		\def\ScoreOverhang{0.5pt}
+			\AxiomC{$\Gamma_1\, \openaddrule\emptymultiset\provesILL \bang\psi_1\closeaddrule$}
+			\AxiomC{$\ldots$}
+			\AxiomC{$\Gamma_n\, \openaddrule\emptymultiset\provesILL \bang\psi_n\closeaddrule$}
+			\AxiomC{$\bang\psi_1,\ldots, \bang\psi_n \provesILL \varphi$}
+			\RightLabel{$\bang$-Promotion}
+			\QuaternaryInfC{$\Gamma_1, \ldots,\Gamma_n \provesILL \bang\varphi$}
+	\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Base-extension Semantics for ILL}
+\begin{frame}{Substructural atomic derivability}
+\begin{definition}
+Basic rules take the following form: 
+\[\openaddrule (\at{P}_{1_i} \seq \at{q}_{1_i})\closeaddrule^{l_1}_{i=1}, \dots, \openaddrule (\at{P}_{n_i} \seq \at{q}_{n_i})\closeaddrule^{l_n}_{i=1} \Rightarrow \at{r}\]
+where 
+\begin{itemize}
+\item Each $P_i$ is an atomic multiset, called a premiss multiset.
+\item Each $q_i$ and $r$ is an atomic proposition.
+\item Each $(P_i \seq q_i)$ is a pair $(P_i, q_i)$ called an atomic sequent.
+\item Each collection $\openaddrule (\at{P}_{i_1} \seq \at{q}_{i_1}), \dots, (\at{P}_{i_{l_i}} \seq \at{q}_{i_{l_i}})\closeaddrule$ is called an atomic box.
+    \end{itemize}
+\end{definition}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Substructural atomic derivability}
+\begin{definition}[Basic derivability relation]
+The relation of derivability in a base $\baseB$, is defined inductively as so:
+\begin{itemize}
+\item[Ref] $p \deriveBaseM{\baseB} p$
+\item[App] Given that $(\openaddrule(\at{P}_{1_i} \seq \at{q}_{1_{i}})\Closeaddrule{i=1}{l_1},\dots,\openaddrule(\at{P}_{n_i} \seq \at{q}_{n_{i}}) \Closeaddrule{i=1}{l_n} \Rightarrow \at{r}) \in \baseB$ and atomic multisets $\at{C}_i$ such that the following hold:
+        \[\at{C}_i, \at{P}_{i_j} \deriveBaseM{\baseB} \at{q}_{i_j} \text{ for all } i = 1,\dots, n \text{ and } j = 1,\dots,l_i\]
+Then $\at{C}_{1},\dots,\at{C}_{n}\deriveBaseM{\baseB} r$. 
+\end{itemize}
+\end{definition}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Base-extension Semantics for ILL}
+\begin{center}
+\begin{itemize}
+\item[(At)] $\suppM{\baseB}{\at{L}} \at{p}$ iff $\at{L} \deriveBaseM{\baseB} \at{p}$. 
+\item[($\mand$)] $\suppM{\baseB}{\at{L}} \varphi \mand \psi$ iff for every $\baseC \baseGeq \baseB$, atomic multiset $\at{K}$, and atom $\at{p}$, if $\varphi\fatcomma\psi\suppM{\baseC}{\at{K}} \at{p}$ then $\suppM{\baseC}{\at{L},\at{K}} \at{p}$. 
+        % 
+\item[($\mtop$)] $\suppM{\baseB}{\at{L}} \mtop$ iff for every $\baseC \baseGeq \baseB$, atomic multiset $\at{K}$, and atom $\at{p}$, if $\suppM{\baseC}{\at{K}} \at{p}$, then $\suppM{\baseC}{\at{L},\at{K}} \at{p}$. 
+        % 
+\item[($\mto$)] $\suppM{\baseB}{\at{L}} \varphi \mto \psi$ iff $\varphi \suppM{\baseB}{\at{L}} \psi$. 
+        % 
+\end{itemize}
+\end{center}
+\hspace{0.5\textwidth}\vdots
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Base-extension Semantics for ILL}
+	\hspace{0.5\textwidth}\vdots
+	\begin{center}
+	\begin{itemize}
+        \item[($\aand$)] $\suppM{\baseB}{L} \varphi \aand \psi$ iff $\suppM{\baseB}{L} \varphi$ and $\suppM{\baseB}{L} \psi$. 
+        %
+        \item[($\aor$)] 
+        $\suppM{\baseB}{L} \varphi \aor \psi$ iff for every $\baseC \baseGeq \baseB$, atomic multiset $\at{K}$ and atom $p \in \At$ such that $\varphi \suppM{\baseC}{\at{K}} \at{p}$ and $\psi \suppM{\baseC}{\at{K}} \at{p}$ hold, then $\suppM{\baseC}{\at{L},\at{K}} \at{p}$. 
+        %
+        \item[($\abot$)] $\suppM{\baseB}{\at{L}} \abot$ iff $\suppM{\baseB}{\at{L}} \at{p}$, for all $\at{p} \in \At$.
+	\end{itemize}
+	\end{center}
+	\hspace{0.5\textwidth}\vdots
+	\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Base-extension Semantics for ILL}
+	\hspace{0.5\textwidth}\vdots
+	\begin{center}
+	\begin{itemize}
+        \item[$(\fatcomma$)] $\suppM{\baseB}{\at{L}}\Gamma\fatcomma\Delta$ iff there are atomic multisets $\at{K}$ and $\at{M}$ such that $L=K,M$ and that $\suppM{\baseB}{\at{K}}\Gamma$ and $\suppM{\baseB}{\at{M}}\Delta$.
+        %
+        \item[($\bang$)] $\suppM{\baseB}{L} \bang \varphi$ iff for any $\baseC$ such that $\baseC \baseGeq \baseB$, atomic multisets $K$ and any $\at{p} \in \At$, if for any $\baseD$ such that $\baseD\baseGeq\baseC$,\,(if $\suppM{\baseD}{\emptymultiset}\varphi$ then $\suppM{\baseD}{L}\at{p})$ then $\suppM{\baseC}{L,K}\at{p}$.
+        %
+        \item[(Inf)] For $\Gamma=\bang\Delta\fatcomma\Theta$ being a nonempty multiset, $\Gamma \suppM{\baseB}{L}\varphi$ iff for all $\baseC \baseGeq \baseB$, atomic multisets $\at{K}$, if $\suppM{\baseC}{\at{K}}\Theta$ and $\suppM{\baseC}{\emptymultiset}\Delta$ then $\suppM{\baseC}{L,K}\varphi$.
+	\end{itemize}
+	\end{center}
+	\pause
+	Note the clause for ($\bang$) could be written as:
+	\begin{itemize}
+		\item $\suppM{\baseB}{L} \bang \varphi$ iff for any $\baseC$ such that $\baseC \baseGeq \baseB$, atomic multisets $K$ and any $\at{p} \in \At$, if $\bang\varphi\suppM{\baseC}{K}\at{p}$ then $\suppM{\baseC}{L,K}\at{p}$.
+	\end{itemize}
+	\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Notes on $\suppM{\baseB}{\at{L}}$}
+	\begin{itemize}
+	\item The sequent $\langle\Gamma,\varphi\rangle$ is said to be valid just in case when $\Gamma\suppM{\emptybase}{\emptymultiset}\varphi$.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Some facts about the semantics}
+\begin{itemize}
+\item If $\suppM{\baseB}{\at{L}}\varphi$ then for all $\baseC \baseGeq \baseB$ we have $\suppM{\baseC}{\at{L}}\varphi$.
+\vspace{5pt}
+\item $\suppM{\baseB}{\at{L}}\varphi$  iff $\suppM{\baseB}{\at{L}}\varphi\mand\mtop$ iff $\suppM{\baseB}{\at{L}}\varphi\fatcomma\mtop$
+\vspace{5pt}
+\item $\suppM{\baseB}{\at{L}}\varphi$ iff for all $\baseC \baseGeq \baseB$, atomic multisets $\at{K}$ and atoms $\at{p}$ such that $\varphi \suppM{\baseC}{\at{K}}\at{p}$ then $\suppM{\baseC}{\at{L},\at{K}}\at{p}$. 
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Including the exponential}
+\begin{frame}{What of the exponential?}
+\begin{center}
+\emph{The exponential is hard...}
+\linebreak
+\newline
+\vspace{0.5cm}
+\pause
+\emph{But I finally got it!}
+\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Why was it so hard?}
+	
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Alternative approach}
+\begin{center}
+\begin{itemize}
+\item We want to re-introduce in a controlled manner the ability for multiple and vacuous discharge of hypotheses. 
+\pause
+\item It is not absurd to distinguish basic sentences based on their content. 
+\pause
+\item The idea is to define a consequence relation which allows for simultaneous inference from both sentences which are "persistent" and "consumable", thus extending the definition of an basic rule to allow derivations to occur from both collections of sentences.
+\item Thus our basic rule might looks something like the following:
+\begin{prooftree}
+\AxiomC{$[P_1;C_1]$}
+\noLine
+\UnaryInfC{$\vdots$}
+\noLine
+\UnaryInfC{$q_1$}
+\AxiomC{$\dots$}
+\AxiomC{$[P_n;C_n]$}
+\noLine
+\UnaryInfC{$\vdots$}
+\noLine
+\UnaryInfC{$q_n$}
+\RightLabel{$\mathcal{R}$}
+\TrinaryInfC{$r$}
+\end{prooftree}
+\end{itemize}
+\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Thank you!}
+\begin{center}
+Thank you for listening!
+
+Questions? Comments? Observations? Please ask and/or feel free to email me at \url{y.buzoku@ucl.ac.uk}.
+\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[allowframebreaks]
+	\frametitle{References}
+	\nocite{*}
+	\bibliographystyle{amsalpha}
+	\bibliography{./refs/refs.bib}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
