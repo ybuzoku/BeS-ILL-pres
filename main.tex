@@ -41,15 +41,30 @@
 \section*{Goals for this presentation}
 \begin{frame}{Goals for this talk}
 \begin{itemize}[label={-}]
-\item To briefly introduce Intuitionistic Linear Logic.
-\item To give an overview of the setup of Base-Extension Semantics in the substructural setting.
+\item To introduce Intuitionistic Linear Logic and a natural deduction system for it.
 \item Present a Base-extension semantics for Intuitionistic Linear Logic.
+\item Talk about some of the difficulties involved the process of developing such a semantics.
+\pause
+\item Is Tammy really a fox?
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Presentation root directory}
 \tableofcontents
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{????}
+\begin{frame}\frametitle{Some Terminology} 
+	\begin{defn}[Region]
+	  Given a topological space $X$, a region is a non-empty, connected, open subset of $X$. The closure of a region is called a closed region. 
+	\end{defn}
+	\pause
+	For the following definitions, let $f:U\subseteq \mathbb{C} \rightarrow \mathbb{C}$, where $U$ is a region.
+	\begin{defn}[Holomorphic]
+	A function $f$ is said to be \emph{holomorphic} if it differentiable at all points $z \in U$.
+	\end{defn}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -428,10 +443,11 @@ Then $\at{C}_{1},\dots,\at{C}_{n}\deriveBaseM{\baseB} r$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Notes on $\suppM{\baseB}{\at{L}}$}
 	\begin{itemize}
-	\item The sequent $\langle\Gamma,\varphi\rangle$ is said to be valid just in case when $\Gamma\suppM{\emptybase}{\emptymultiset}\varphi$.
+	\item The sequent $\langle\Gamma,\varphi\rangle$ is said to be valid if and only if $\Gamma\suppM{\emptybase}{\emptymultiset}\varphi$ holds.
+	\pause
+	\item We frequently write this as $\Gamma \suppM{}{}\varphi$.
 	\end{itemize}
 \end{frame}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Notes on $\suppM{\baseB}{\at{L}}$}
 \begin{itemize}
@@ -439,16 +455,56 @@ Then $\at{C}_{1},\dots,\at{C}_{n}\deriveBaseM{\baseB} r$.
 \vspace{5pt}
 \item $\suppM{\baseB}{\at{L}}\varphi$  iff $\suppM{\baseB}{\at{L}}\varphi\mand\mtop$ iff $\suppM{\baseB}{\at{L}}\varphi\fatcomma\mtop$
 \vspace{5pt}
-\item $\suppM{\baseB}{\at{L}}\varphi$ iff for all $\baseC \baseGeq \baseB$, atomic multisets $\at{K}$ and atoms $\at{p}$ such that $\varphi \suppM{\baseC}{\at{K}}\at{p}$ then $\suppM{\baseC}{\at{L},\at{K}}\at{p}$. 
+\item $\Gamma \suppM{\baseB}{\at{L}}\varphi$ iff for all $\baseC \baseGeq \baseB$ and atomic multisets $\at{K}$,\, $\suppM{\baseC}{\at{K}}\Gamma$ implies $\suppM{\baseC}{\at{L},\at{K}}\varphi$. 
+%\vspace{5pt}
+%\item $\suppM{\baseB}{\at{L}}\varphi$ iff for all $\baseC \baseGeq \baseB$ and atomic multisets $\at{K}$ and atoms $p$,\, $\varphi\suppM{\baseC}{K}p$ implies $\suppM{\baseC}{L,K}p$. 
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Soundness}
-	
+	\begin{theorem}[Soundness]
+		\centering
+		If $\Gamma\proves\varphi$ then $\Gamma\suppM{}{}\varphi$
+	\end{theorem}
+	\pause
+	\begin{itemize}
+		\item The strategy is to show every rule of the natural deduction system presented previously is semantically expressible.
+		\item This suffices by induction to prove this theorem as now we can encode any deduction into a series of semantic proofs.
+	\end{itemize}
+\end{frame}
+\begin{frame}
+	\begin{example}
+		\centering
+		If $\Gamma\fatcomma\varphi \suppM{}{}\psi$ then $\Gamma\suppM{}{}\varphi\mto\psi$.
+	\end{example}
+	\begin{proof}
+		\begin{itemize}
+			\item The hypothesis iff all bases $\baseB$ and atomic multisets $M=K,L$ where $\suppM{\baseB}{K}\varphi$ and $\suppM{\baseB}{L}\Gamma$ implies $\suppM{\baseB}{M}\psi$.
+			\pause
+			\item Monotonicity gives that this holds in all $\baseC \baseGeq \baseB$.
+			\pause
+			\item Thus we have that $\varphi\suppM{\baseB}{L}\psi$.
+			\pause
+			\item $\suppM{\baseB}{L}\varphi\mto\psi$ if and only if $\varphi\suppM{\baseB}{L}\psi$.
+			\pause
+			\item So we obtain that $\suppM{\baseB}{L}\varphi\mto\psi$ and thus $\Gamma\suppM{}{}\varphi\mto\psi$
+		\end{itemize}
+	\end{proof}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Completeness}
-	
+	\begin{theorem}[Completeness]
+		\centering
+		If $\Gamma\suppM{}{}\varphi$ then $\Gamma\proves\varphi$.
+	\end{theorem}
+	\pause
+	\begin{itemize}
+		\item Define two functions $\flatILL{(\cdot)}:\ILLformula \rightarrow \At$ and $\deflatILL{(\cdot)}:\At\rightarrow\ILLformula$.
+		\item Show that any valid sequent remains valid when ``atomised".
+		\item Construct a base $\baseILL$ whose rules simulate the natural deduction rules of ILL.
+		\item Show that every derivation in this simulation base is equivalent to a corresponding derivation in ILL.
+		\item Show we can go from a valid atomic derivation to a derivation in ILL.
+	\end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Including the exponential}
@@ -464,18 +520,132 @@ Then $\at{C}_{1},\dots,\at{C}_{n}\deriveBaseM{\baseB} r$.
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Why was it so hard?}
-	
+	\begin{center}
+		\begin{minipage}{\textwidth}\scriptsize
+			\begin{prooftree}
+				\def\ScoreOverhang{0.5pt}
+					\AxiomC{$\Gamma_1 \provesILL \bang\psi_1$}
+					\AxiomC{$\ldots$}
+					\AxiomC{$\Gamma_n \provesILL \bang\psi_n$}
+					\AxiomC{$\bang\psi_1,\ldots, \bang\psi_n \provesILL \varphi$}
+					\RightLabel{$\bang$-Promotion}
+					\QuaternaryInfC{$\Gamma_1, \ldots,\Gamma_n \provesILL \bang\varphi$}
+			\end{prooftree}
+			\begin{prooftree}
+				\def\ScoreOverhang{0.5pt}
+					\AxiomC{$\Gamma \provesILL \bang\varphi$}
+					\AxiomC{$\Delta, \varphi \provesILL \psi$}
+					\RightLabel{$\bang$-Dereliction}
+					\BinaryInfC{$\Gamma, \Delta\provesILL \psi$}
+			\end{prooftree}
+			\begin{prooftree}
+				\def\ScoreOverhang{0.5pt}
+					\AxiomC{$\Gamma \provesILL \bang\varphi$}
+					\AxiomC{$\Delta \provesILL \psi$}
+					\RightLabel{$\bang$-Weakening}
+					\BinaryInfC{$\Gamma, \Delta\provesILL \psi$}
+			\end{prooftree}
+			\begin{prooftree}
+				\def\ScoreOverhang{0.5pt}
+					\AxiomC{$\Gamma \provesILL \bang\varphi$}
+					\AxiomC{$\Delta,\bang\varphi,\bang\varphi \provesILL \psi$}
+					\RightLabel{$\bang$-Contraction}
+					\BinaryInfC{$\Gamma, \Delta\provesILL \psi$}
+			\end{prooftree}
+		\end{minipage}
+	\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}{What of the exponential?}
+%	\begin{itemize}
+%	\item All "structural" aspects of the exponential are on the \emph{left} hand side.
+%	\pause
+%	\item The exponential right rule, still depends fully on the structure of the left hand side.
+%	\pause
+%	\item None of these rules are invertible, so none are particularly nice candidates for giving a definition. 
+%	\end{itemize}
+%	\pause
+%	However, this means that to pinpoint the behaviour of the exponential, we need to pinpoint something about the resources which can be used to support it! 
+%\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Why was it so hard?}
+	\begin{prooftree}
+		\AxiomC{$\bang\psi \provesILL \bang\psi$}
+		\AxiomC{$\bang\psi \provesILL \varphi$}
+		\BinaryInfC{$\bang\psi\provesILL \bang\varphi$}
+	\end{prooftree}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What do we have now?}
+	\begin{center}
+		\begin{itemize}
+			\item[($\bang$)] $\suppM{\baseB}{L} \bang \varphi$ iff for any $\baseC$ such that $\baseC \baseGeq \baseB$, atomic multisets $K$ and any $\at{p} \in \At$, if $\bang\varphi\suppM{\baseC}{K}p$ then $\suppM{\baseC}{L,K}\at{p}$.
+			%
+			\vspace{1cm}
+			%
+			\item[(Inf)] For $\Gamma=\bang\Delta\fatcomma\Theta$ being a nonempty multiset, $\Gamma \suppM{\baseB}{L}\varphi$ iff for all $\baseC \baseGeq \baseB$, atomic multisets $\at{K}$, if $\suppM{\baseC}{\at{K}}\Theta$ and $\suppM{\baseC}{\emptymultiset}\Delta$ then $\suppM{\baseC}{L,K}\varphi$.
+		\end{itemize}
+	\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What do we know?}
+	An important identity from Intuitionistic Linear Logic:
+	\begin{itemize}
+	\item $\bang\varphi \suppM{}{} \varphi \mand \ldots \mand \varphi$
+	\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Expanding what we know}
+	\begin{center}
+	\begin{align*}
+	&\bang\varphi \suppM{}{} \varphi \mand \ldots \mand \varphi \text{ iff } \\
+	&\text{ for all bases } \baseB \text{ and atomic multisets } \at{L} \text{, such that } \suppM{\baseB}{\at{L}} \bang\varphi \text{ then } \\ 
+	&\suppM{\baseB}{\at{L}} \varphi \mand \ldots \mand \varphi
+	\end{align*}
+	\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Expanding what we know}
+	\begin{center}
+	\begin{itemize}
+	\item So when does $\suppM{\baseB}{\at{L}} \varphi \mand \ldots \mand \varphi$ hold?
+	\end{itemize}
+	\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Expanding what we know}
+	\begin{center}
+	Considering the case when $\varphi = \at{p}$ for simplicity we get the following:
+	\begin{itemize}
+	\pause
+	\item Given a base $\baseB$ such that $\deriveBaseM{\baseB}\at{p}$ and $\at{L}=\emptymultiset$.
+	\pause
+	\item Then we have that $\suppM{\baseB}{\at{L}}\at{p} \mand \ldots \mand \at{p}$.
+	\pause
+	\item Examples of such bases:
+	\begin{itemize}
+		\item $\baseB = \{ (\Rightarrow p)\}$
+		\item $\baseB = \{(\Rightarrow q),\, (q\Rightarrow p) \}$
+		%\item $\baseB = \{\at{r},\, \}$ and $\at{L}=\[\at{r}\]$
+	\end{itemize}
+	\pause
+	\end{itemize} 
+	\vspace{10pt}
+	Note that if $\at{L}$ were non-empty then all of the atoms in $L$, call them $r_i$, would have to be derivable purely from $\baseB$.
+	\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Expanding what we know}
+	\begin{center}
+	\noindent
+	\emph{Inferring from $\bang \varphi$ should imply that $\suppM{\baseB}{\emptymultiset}\varphi$.}
+	\end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Alternative approach}
 \begin{center}
 \begin{itemize}
-\item We want to re-introduce in a controlled manner the ability for multiple and vacuous discharge of hypotheses. 
-\pause
-\item It is not absurd to distinguish basic sentences based on their content. 
-\pause
-\item The idea is to define a consequence relation which allows for simultaneous inference from both sentences which are "persistent" and "consumable", thus extending the definition of an basic rule to allow derivations to occur from both collections of sentences.
-\item Thus our basic rule might looks something like the following:
 \begin{prooftree}
 \AxiomC{$[P_1;C_1]$}
 \noLine
@@ -495,13 +665,32 @@ Then $\at{C}_{1},\dots,\at{C}_{n}\deriveBaseM{\baseB} r$.
 \end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Thank you!}
-\begin{center}
-Thank you for listening!
-
-Questions? Comments? Observations? Please ask and/or feel free to email me at \url{y.buzoku@ucl.ac.uk}.
-\end{center}
+\begin{frame}{Is Tammy really a fox?}
+	\pause
+	\centering
+	\textbf{Maybe?}\linebreak
+	\pause
+	But I actually now think she is a Cat $\ldots$\linebreak
+	\pause
+	Specifically a symmetric monoidal cat!
 \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Thank you!}
+\begin{figure}
+	\begin{center}
+	  \includegraphics[width=\textwidth]{dosthanks2.png}
+	  \caption{Thank you from DOS!\,:D}
+	\end{center}
+  \end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}{Thank you!}
+%\begin{center}
+%Thank you for listening!
+
+%Questions? Comments? Observations? Please ask and/or feel free to email me at \url{y.buzoku@ucl.ac.uk}.
+%\end{center}
+%\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[allowframebreaks]
 	\frametitle{References}
