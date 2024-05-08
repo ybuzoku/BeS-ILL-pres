@@ -7,6 +7,12 @@
 \providecommand{\href}[2]{#2}
 \begin{thebibliography}{GGP23}
 
+\bibitem[Bie94]{UCAM-CL-TR-346}
+G.M. Bierman, \emph{{On intuitionistic linear logic}}, Tech. Report UCAM-CL-TR-346, University of Cambridge, Computer Laboratory, August 1994.
+
+\bibitem[Buz24]{buzoku2024prooftheoretic}
+Yll Buzoku, \emph{A proof-theoretic semantics for intuitionistic linear logic}, 2024.
+
 \bibitem[GGP23]{AlexTaoDavid}
 Alexander~V. Gheorghiu, Tao Gu, and David~J. Pym, \emph{Proof-theoretic semantics for intuitionistic multiplicative linear logic}, Automated Reasoning with Analytic Tableaux and Related Methods (Cham) (Revantha Ramanayake and Josef Urban, eds.), Springer Nature Switzerland, 2023, pp.~367--385.
 
